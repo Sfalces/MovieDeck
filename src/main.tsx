@@ -1,10 +1,16 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import { Dashboard } from './ui/Dashboard'
+import { registerCoreModules } from '_di/registers/registerCoreModules'
+import { BrowserRouter } from 'react-router'
+import { App } from './App'
+
+registerCoreModules()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Dashboard />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </StrictMode>,
 )
