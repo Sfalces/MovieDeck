@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 import type { MovieCredits } from 'core/Movies/domain/MovieCredits'
-import { CreditsCard } from '../CreditsCard'
+import { CreditsCard } from './CreditsCard'
 
 interface Props {
   credits: MovieCredits

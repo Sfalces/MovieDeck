@@ -3,12 +3,16 @@ import { useInject } from '_di/container'
 import { useEffect, useState } from 'react'
 import type { Movie, MovieVideos } from 'core/Movies/domain/Movie'
 import { MovieDetails } from './MovieDetails'
+import type { MovieCredits } from 'core/Movies/domain/MovieCredits'
+import { Spinner } from 'ui/_components/atoms/Spinner'
 
 export const MovieDetailsController = () => {
   const { id } = useParams<{ id: string }>()
   const getMovieDetails = useInject('getMovieById')
   const getTrailer = useInject('getMovieVideos')
   const getSimilarMovies = useInject('getSimilarMovies')
+  const getCredits = useInject('getMovieCredits')
+  const [credits, setCredits] = useState<MovieCredits | undefined>()
   const [movieDetails, setMovieDetails] = useState<Movie | undefined>()
   const [similarMovies, setSimilarMovies] = useState<Movie[]>([])
   const [trailer, setTrailer] = useState<MovieVideos | undefined>()
@@ -29,17 +33,19 @@ export const MovieDetailsController = () => {
       setSimilarMovies(similarMovies)
     }
 
+    const fetchCredits = async () => {
+      const credits = await getCredits(id!)
+      setCredits(credits)
+    }
+
     fetchMovie()
     fetchTrailer()
     fetchSimilarMovies()
+    fetchCredits()
   }, [id])
 
-  if (!movieDetails || !trailer) {
-    return (
-      <div className="loader-container">
-        <div className="spinner" />
-      </div>
-    )
+  if (!movieDetails || !trailer || !credits) {
+    return <Spinner />
   }
   return (
     <MovieDetails
@@ -54,6 +60,7 @@ export const MovieDetailsController = () => {
       title={movieDetails.title}
       vote={movieDetails.vote}
       similarMovies={similarMovies}
+      credits={credits}
     />
   )
 }

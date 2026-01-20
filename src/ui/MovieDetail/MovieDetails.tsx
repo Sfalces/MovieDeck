@@ -1,8 +1,9 @@
 import type { FC } from 'react'
 import type { Movie, MovieVideos } from 'core/Movies/domain/Movie'
-import { Credits } from './_components/Credits'
 import { Trailer } from './_components/Trailer'
 import MovieCarousel from '../_components/molecules/MovieCarousel/MovieCarousel'
+import type { MovieCredits } from 'core/Movies/domain/MovieCredits'
+import { Credits } from './_components/Credits'
 
 interface Props {
   trailer: MovieVideos
@@ -16,6 +17,7 @@ interface Props {
   budget: number | undefined
   revenue: number | undefined
   similarMovies: Movie[]
+  credits: MovieCredits
 }
 
 export const MovieDetails: FC<Props> = ({
@@ -30,6 +32,7 @@ export const MovieDetails: FC<Props> = ({
   revenue,
   trailer,
   similarMovies,
+  credits,
 }) => {
   const details = [
     { label: 'Release Date', value: releaseDate },
@@ -62,7 +65,7 @@ export const MovieDetails: FC<Props> = ({
           </div>
         </div>
       </div>
-      <Credits />
+      <Credits credits={credits} />
       {trailer.trailer && <Trailer trailer={trailer.trailer} />}
       <div className="mt-8">
         <MovieCarousel movies={similarMovies} />

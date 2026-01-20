@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Dashboard } from './Dashboard'
 import { useInject } from '_di/container'
 import type { Movie } from 'core/Movies/domain/Movie'
+import { Spinner } from 'ui/_components/atoms/Spinner'
 
 export const DashboardController = () => {
   const getTrendingMovies = useInject('getTrendingMovies')
@@ -39,11 +40,7 @@ export const DashboardController = () => {
   }
 
   if (!movies) {
-    return (
-      <div className="loader-container text-white  h-svh">
-        <div data-testid={'loader'} className="spinner" />
-      </div>
-    )
+    return <Spinner />
   }
 
   return (

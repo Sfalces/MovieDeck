@@ -25,6 +25,7 @@ export const SearchBar: FC<Props> = ({ onSearch }) => {
       <input
         value={search}
         onChange={handleOnChange}
+        data-testid="search"
         onKeyUp={handleKeyUp}
         className="bg-white text-black rounded-lg p-1 w-1/4"
         type="text"
