@@ -9,7 +9,7 @@ export const Poster = () => {
 
   useEffect(() => {
     const fetchMovieByTitle = async () => {
-      const movie = await getMoviesByTitle('the lord of the rings')
+      const movie = await getMoviesByTitle('the lord of the rings the fellowship of the ring')
       setMovie(movie)
     }
 
