@@ -23,3 +23,16 @@ export interface MovieVideos {
   videos: MovieVideo[]
   trailer?: MovieVideo | null
 }
+
+export interface Person {
+  birthday: string | null
+  known_for_department: string
+  deathday: string | null
+  id: string
+  name: string
+  also_known_as: string[]
+  gender: number
+  biography: string | null
+  place_of_birth: string | null
+  profile_path: string | null
+}

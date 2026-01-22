@@ -7,6 +7,7 @@ import { getMovieById } from '../useCases/getMovieById'
 import { getMovieByTitle } from '../useCases/getMovieByTitle'
 import { getMovieCredits } from '../useCases/getMovieCredits'
 import { getMovieVideos } from '../useCases/getMovieVideos'
+import { getPersonById } from '../useCases/getPersonById'
 import { getSimilarMovies } from '../useCases/getSimilarMovies'
 import { getTrendingMovies } from '../useCases/getTrendingMovies'
 
@@ -20,4 +21,5 @@ export const moviesModules = {
   getMovieByTitle: asFunction(getMovieByTitle),
   getComingSoon: asFunction(getComingSoon),
   getMovieByGender: asFunction(getMovieByGender),
+  getPersonById: asFunction(getPersonById),
 }

@@ -1,14 +1,16 @@
 import type { ApiClient } from '../../Shared/domain/ApiClient'
-import type { Movie, MovieVideos } from '../domain/Movie'
+import type { Movie, MovieVideos, Person } from '../domain/Movie'
 import type { MovieCredits } from '../domain/MovieCredits'
 import type { MoviesRepository } from '../domain/MoviesRepository'
 import { MovieCreditsDtoSchema } from './_dto/MovieCreditsDto'
 import { MovieDetailsDtoSchema } from './_dto/MovieDto'
 import { TrendingMoviesDtoSchema } from './_dto/MovieSummary'
 import { MovieVideosDtoSchema } from './_dto/MovieTrailerDto'
+import { PersonDtoSchema } from './_dto/PersonDto'
 import { MovieCreditsMapper } from './_mappers/MovieCreditsMapper'
 import { movieDetailsMapToDomain, movieSummaryMapToDomain } from './_mappers/MovieMapper'
 import { MovieVideosMapper } from './_mappers/MovieVideosMapper'
+import { PersonMapToDomain } from './_mappers/PersonMapper'
 
 interface Dependencies {
   apiClient: ApiClient
@@ -67,5 +69,11 @@ export const apiMoviesRepository = ({ apiClient }: Dependencies): MoviesReposito
     )
     const parsed = TrendingMoviesDtoSchema.parse(response.data)
     return parsed.results.map(movieSummaryMapToDomain)
+  },
+
+  getPersonById: async (id: string): Promise<Person> => {
+    const response = await apiClient.get(`/person/${id}?api_key=${API_KEY}&language=en-US`)
+    const parsed = PersonDtoSchema.parse(response.data)
+    return PersonMapToDomain(parsed)
   },
 })

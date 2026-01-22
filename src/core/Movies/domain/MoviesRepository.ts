@@ -1,4 +1,4 @@
-import type { Movie, MovieVideos } from './Movie'
+import type { Movie, MovieVideos, Person } from './Movie'
 import type { MovieCredits } from './MovieCredits'
 
 export interface MoviesRepository {
@@ -10,4 +10,5 @@ export interface MoviesRepository {
   getMovieByTitle: (title: string) => Promise<Movie>
   getComingSoon: () => Promise<Movie[]>
   getMovieByGender: (genre: string) => Promise<Movie[]>
+  getPersonById: (id: string) => Promise<Person>
 }
