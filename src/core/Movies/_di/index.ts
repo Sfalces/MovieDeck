@@ -10,6 +10,7 @@ import { getMovieVideos } from '../useCases/getMovieVideos'
 import { getPersonById } from '../useCases/getPersonById'
 import { getSimilarMovies } from '../useCases/getSimilarMovies'
 import { getTrendingMovies } from '../useCases/getTrendingMovies'
+import { searchMovies } from '../useCases/searchMovies'
 
 export const moviesModules = {
   apiMoviesRepository: asFunction<MoviesRepository>(apiMoviesRepository),
@@ -22,4 +23,5 @@ export const moviesModules = {
   getComingSoon: asFunction(getComingSoon),
   getMovieByGender: asFunction(getMovieByGender),
   getPersonById: asFunction(getPersonById),
+  searchMovies: asFunction(searchMovies),
 }
