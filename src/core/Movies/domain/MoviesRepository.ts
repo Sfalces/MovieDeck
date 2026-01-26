@@ -8,6 +8,7 @@ export interface MoviesRepository {
   getMovieVideos: (id: string) => Promise<MovieVideos>
   getSimilarMovies: (id: string) => Promise<Movie[]>
   getMovieByTitle: (title: string) => Promise<Movie>
+  searchMovies: (query: string) => Promise<Movie[]>
   getComingSoon: () => Promise<Movie[]>
   getMovieByGender: (genre: string) => Promise<Movie[]>
   getPersonById: (id: string) => Promise<Person>
