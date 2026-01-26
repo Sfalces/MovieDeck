@@ -1,6 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { ApiClient } from '../../../Shared/domain/ApiClient'
 import { apiMoviesRepository } from '../apiMoviesRepository'
+import { aTrendingMoviesDto, aMovieSummaryDto } from '../__builders__/MovieSummaryDtoBuilder'
+import { aMovieDetailsDto } from '../__builders__/MovieDetailsDtoBuilder'
+import { aMovieCreditsDto } from '../__builders__/MovieCreditsDtoBuilder'
+import { aMovieVideosDto } from '../__builders__/MovieVideosDtoBuilder'
+import { aPersonDto } from '../__builders__/PersonDtoBuilder'
 
 describe('apiMoviesRepository', () => {
   let mockApiClient: {
@@ -22,26 +27,19 @@ describe('apiMoviesRepository', () => {
   describe('getTrendingMovies', () => {
     it('should fetch trending movies from the correct endpoint', async () => {
       const mockResponse = {
-        data: {
+        data: aTrendingMoviesDto({
           results: [
-            {
-              id: 1,
-              title: 'Batman Begins',
-              overview: 'A young Bruce Wayne becomes Batman',
-              vote_average: 8.2,
-              release_date: '2005-06-15',
-              poster_path: '/poster1.jpg',
-            },
-            {
+            aMovieSummaryDto(),
+            aMovieSummaryDto({
               id: 2,
               title: 'The Dark Knight',
               overview: 'Batman faces the Joker',
               vote_average: 9.0,
               release_date: '2008-07-18',
               poster_path: '/poster2.jpg',
-            },
+            }),
           ],
-        },
+        }),
       }
 
       mockApiClient.get.mockResolvedValue(mockResponse)
@@ -73,22 +71,7 @@ describe('apiMoviesRepository', () => {
   describe('getMovieById', () => {
     it('should fetch movie details by id from the correct endpoint', async () => {
       const mockResponse = {
-        data: {
-          id: 123,
-          title: 'Inception',
-          overview: 'A mind-bending thriller',
-          vote_average: 8.8,
-          release_date: '2010-07-16',
-          poster_path: '/inception.jpg',
-          tagline: 'Your mind is the scene of the crime.',
-          runtime: 148,
-          genres: [
-            { id: 28, name: 'Action' },
-            { id: 878, name: 'Science Fiction' },
-          ],
-          budget: 160000000,
-          revenue: 836836967,
-        },
+        data: aMovieDetailsDto(),
       }
 
       mockApiClient.get.mockResolvedValue(mockResponse)
@@ -113,7 +96,7 @@ describe('apiMoviesRepository', () => {
 
     it('should handle null poster_path correctly', async () => {
       const mockResponse = {
-        data: {
+        data: aMovieDetailsDto({
           id: 123,
           title: 'Test Movie',
           overview: 'Test overview',
@@ -123,7 +106,7 @@ describe('apiMoviesRepository', () => {
           tagline: null,
           runtime: null,
           genres: [],
-        },
+        }),
       }
 
       mockApiClient.get.mockResolvedValue(mockResponse)
@@ -140,30 +123,7 @@ describe('apiMoviesRepository', () => {
   describe('getMovieCredits', () => {
     it('should fetch movie credits from the correct endpoint', async () => {
       const mockResponse = {
-        data: {
-          cast: [
-            {
-              id: 123,
-              name: 'Leonardo DiCaprio',
-              character: 'Dom Cobb',
-              profile_path: '/leo.jpg',
-            },
-            {
-              id: 456,
-              name: 'Marion Cotillard',
-              character: 'Mal Cobb',
-              profile_path: '/marion.jpg',
-            },
-          ],
-          crew: [
-            {
-              id: 789,
-              name: 'Christopher Nolan',
-              job: 'Director',
-              profile_path: '/nolan.jpg',
-            },
-          ],
-        },
+        data: aMovieCreditsDto(),
       }
 
       mockApiClient.get.mockResolvedValue(mockResponse)
@@ -194,31 +154,7 @@ describe('apiMoviesRepository', () => {
   describe('getMovieVideos', () => {
     it('should fetch movie videos from the correct endpoint', async () => {
       const mockResponse = {
-        data: {
-          id: 123,
-          results: [
-            {
-              id: 'video1',
-              name: 'Official Trailer',
-              type: 'Trailer',
-              key: 'trailer-key',
-              site: 'YouTube',
-              size: 1080,
-              official: true,
-              published_at: '2020-07-15T00:00:00.000Z',
-            },
-            {
-              id: 'video2',
-              name: 'Teaser',
-              type: 'Teaser',
-              key: 'teaser-key',
-              site: 'YouTube',
-              size: 1080,
-              official: false,
-              published_at: '2020-06-15T00:00:00.000Z',
-            },
-          ],
-        },
+        data: aMovieVideosDto(),
       }
 
       mockApiClient.get.mockResolvedValue(mockResponse)
@@ -254,18 +190,18 @@ describe('apiMoviesRepository', () => {
   describe('getSimilarMovies', () => {
     it('should fetch similar movies from the correct endpoint', async () => {
       const mockResponse = {
-        data: {
+        data: aTrendingMoviesDto({
           results: [
-            {
+            aMovieSummaryDto({
               id: 456,
               title: 'The Prestige',
               overview: 'Two magicians duel',
               vote_average: 8.5,
               release_date: '2006-10-20',
               poster_path: '/prestige.jpg',
-            },
+            }),
           ],
-        },
+        }),
       }
 
       mockApiClient.get.mockResolvedValue(mockResponse)
@@ -289,26 +225,26 @@ describe('apiMoviesRepository', () => {
   describe('getMovieByTitle', () => {
     it('should search movies by title from the correct endpoint', async () => {
       const mockResponse = {
-        data: {
+        data: aTrendingMoviesDto({
           results: [
-            {
+            aMovieSummaryDto({
               id: 550,
               title: 'Fight Club',
               overview: 'An insomniac office worker',
               vote_average: 8.4,
               release_date: '1999-10-15',
               poster_path: '/fightclub.jpg',
-            },
-            {
+            }),
+            aMovieSummaryDto({
               id: 551,
               title: 'Fight Club 2',
               overview: 'Sequel to Fight Club',
               vote_average: 6.0,
               release_date: '2020-01-01',
               poster_path: '/fightclub2.jpg',
-            },
+            }),
           ],
-        },
+        }),
       }
 
       mockApiClient.get.mockResolvedValue(mockResponse)
@@ -330,18 +266,18 @@ describe('apiMoviesRepository', () => {
   describe('getComingSoon', () => {
     it('should fetch upcoming movies from the correct endpoint', async () => {
       const mockResponse = {
-        data: {
+        data: aTrendingMoviesDto({
           results: [
-            {
+            aMovieSummaryDto({
               id: 789,
               title: 'Avatar 3',
               overview: 'The next Avatar movie',
               vote_average: 0,
               release_date: '2025-12-19',
               poster_path: '/avatar3.jpg',
-            },
+            }),
           ],
-        },
+        }),
       }
 
       mockApiClient.get.mockResolvedValue(mockResponse)
@@ -365,26 +301,26 @@ describe('apiMoviesRepository', () => {
   describe('getMovieByGender', () => {
     it('should fetch movies by genre from the correct endpoint', async () => {
       const mockResponse = {
-        data: {
+        data: aTrendingMoviesDto({
           results: [
-            {
+            aMovieSummaryDto({
               id: 101,
               title: 'Action Movie 1',
               overview: 'An action-packed film',
               vote_average: 7.2,
               release_date: '2023-05-15',
               poster_path: '/action1.jpg',
-            },
-            {
+            }),
+            aMovieSummaryDto({
               id: 102,
               title: 'Action Movie 2',
               overview: 'Another action film',
               vote_average: 6.8,
               release_date: '2023-08-20',
               poster_path: '/action2.jpg',
-            },
+            }),
           ],
-        },
+        }),
       }
 
       mockApiClient.get.mockResolvedValue(mockResponse)
@@ -416,22 +352,7 @@ describe('apiMoviesRepository', () => {
   describe('getPersonById', () => {
     it('should fetch person details from the correct endpoint', async () => {
       const mockResponse = {
-        data: {
-          id: 123,
-          name: 'Christopher Nolan',
-          birthday: '1970-07-30',
-          deathday: null,
-          known_for_department: 'Directing',
-          also_known_as: ['Chris Nolan'],
-          gender: 2,
-          biography: 'Christopher Nolan is a British-American film director...',
-          place_of_birth: 'London, England, UK',
-          profile_path: '/nolan-profile.jpg',
-          adult: false,
-          imdb_id: 'nm0634240',
-          homepage: null,
-          popularity: 8.5,
-        },
+        data: aPersonDto(),
       }
 
       mockApiClient.get.mockResolvedValue(mockResponse)
