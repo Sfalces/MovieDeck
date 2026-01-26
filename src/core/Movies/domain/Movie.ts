@@ -31,8 +31,13 @@ export interface Person {
   id: string
   name: string
   also_known_as: string[]
-  gender: number
+  gender: Gender
   biography: string | null
   place_of_birth: string | null
   profile_path: string | null
+}
+
+export enum Gender {
+  Female = 1,
+  Male = 2,
 }
