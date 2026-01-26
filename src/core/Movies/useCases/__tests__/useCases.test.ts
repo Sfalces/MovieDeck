@@ -6,6 +6,7 @@ import { getMovieCredits } from '../getMovieCredits'
 import { getMovieVideos } from '../getMovieVideos'
 import { getSimilarMovies } from '../getSimilarMovies'
 import { getMovieByTitle } from '../getMovieByTitle'
+import { searchMovies } from '../searchMovies'
 import { getComingSoon } from '../getComingSoon'
 import { getMovieByGender } from '../getMovieByGender'
 import { getPersonById } from '../getPersonById'
@@ -27,6 +28,7 @@ describe('Use Cases', () => {
       getMovieVideos: vi.fn(),
       getSimilarMovies: vi.fn(),
       getMovieByTitle: vi.fn(),
+      searchMovies: vi.fn(),
       getComingSoon: vi.fn(),
       getMovieByGender: vi.fn(),
       getPersonById: vi.fn(),
@@ -113,6 +115,24 @@ describe('Use Cases', () => {
       expect(mockRepository.getMovieByTitle).toHaveBeenCalledTimes(1)
       expect(mockRepository.getMovieByTitle).toHaveBeenCalledWith('Fight Club')
       expect(result).toEqual(expectedMovie)
+    })
+  })
+
+  describe('searchMovies', () => {
+    it('should call repository.searchMovies with the correct query and return the result', async () => {
+      const expectedMovies = [
+        aMovieDetails({ id: '550', title: 'Fight Club' }),
+        aMovieDetails({ id: '551', title: 'Fight Club 2' }),
+        aMovieDetails({ id: '552', title: 'Fight Club 3' }),
+      ]
+      mockRepository.searchMovies = vi.fn().mockResolvedValue(expectedMovies)
+
+      const useCase = searchMovies({ apiMoviesRepository: mockRepository })
+      const result = await useCase('Fight Club')
+
+      expect(mockRepository.searchMovies).toHaveBeenCalledTimes(1)
+      expect(mockRepository.searchMovies).toHaveBeenCalledWith('Fight Club')
+      expect(result).toEqual(expectedMovies)
     })
   })
 
