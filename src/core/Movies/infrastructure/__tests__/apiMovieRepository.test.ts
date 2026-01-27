@@ -200,9 +200,13 @@ describe('apiMoviesRepository', () => {
 
       mockApiClient.get.mockResolvedValue(mockResponse)
 
-      const result = await repository.searchMovies('Fight Club')
+      const signal = new AbortController().signal
+      const result = await repository.searchMovies('Fight Club', signal)
 
-      expect(mockApiClient.get).toHaveBeenCalledWith(`/search/movie?api_key=${TEST_API_KEY}&query=Fight Club`)
+      expect(mockApiClient.get).toHaveBeenCalledWith(
+        `/search/movie?api_key=${TEST_API_KEY}&query=Fight Club`,
+        { signal },
+      )
       expect(result).toHaveLength(5)
       expect(result).toEqual(movies.slice(0, 5).map(movieSummaryMapToDomain))
     })
@@ -219,9 +223,13 @@ describe('apiMoviesRepository', () => {
 
       mockApiClient.get.mockResolvedValue(mockResponse)
 
-      const result = await repository.searchMovies('Fight Club')
+      const signal = new AbortController().signal
+      const result = await repository.searchMovies('Fight Club', signal)
 
-      expect(mockApiClient.get).toHaveBeenCalledWith(`/search/movie?api_key=${TEST_API_KEY}&query=Fight Club`)
+      expect(mockApiClient.get).toHaveBeenCalledWith(
+        `/search/movie?api_key=${TEST_API_KEY}&query=Fight Club`,
+        { signal },
+      )
       expect(result).toHaveLength(2)
       expect(result).toEqual(movies.map(movieSummaryMapToDomain))
     })

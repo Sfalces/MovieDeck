@@ -51,9 +51,7 @@ describe('MovieDetails', () => {
 
   it('should show the gender name', async () => {
     renderMovieListByGenre()
-
-    screen.debug()
-
+    
     expect(await screen.findByText('Action Movie List')).toBeInTheDocument()
   })
 

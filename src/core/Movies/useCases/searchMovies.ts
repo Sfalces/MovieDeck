@@ -6,5 +6,5 @@ interface Dependencies {
 
 export const searchMovies =
   ({ apiMoviesRepository }: Dependencies) =>
-  (query: string) =>
-    apiMoviesRepository.searchMovies(query)
+  (query: string, signal?: AbortSignal) =>
+    apiMoviesRepository.searchMovies(query, signal)

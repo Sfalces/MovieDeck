@@ -128,10 +128,11 @@ describe('Use Cases', () => {
       mockRepository.searchMovies = vi.fn().mockResolvedValue(expectedMovies)
 
       const useCase = searchMovies({ apiMoviesRepository: mockRepository })
-      const result = await useCase('Fight Club')
+      const signal = {} as AbortSignal
+      const result = await useCase('Fight Club', signal)
 
       expect(mockRepository.searchMovies).toHaveBeenCalledTimes(1)
-      expect(mockRepository.searchMovies).toHaveBeenCalledWith('Fight Club')
+      expect(mockRepository.searchMovies).toHaveBeenCalledWith('Fight Club', signal)
       expect(result).toEqual(expectedMovies)
     })
   })

@@ -57,8 +57,10 @@ export const apiMoviesRepository = ({ apiClient }: Dependencies): MoviesReposito
     return parsed.results.map(movieSummaryMapToDomain)[0]
   },
 
-  searchMovies: async (query: string): Promise<Movie[]> => {
-    const response = await apiClient.get(`/search/movie?api_key=${API_KEY}&query=${query}`)
+  searchMovies: async (query: string, signal?: AbortSignal): Promise<Movie[]> => {
+    const response = await apiClient.get(`/search/movie?api_key=${API_KEY}&query=${query}`, {
+      signal,
+    })
     const parsed = TrendingMoviesDtoSchema.parse(response.data)
     return parsed.results.map(movieSummaryMapToDomain).slice(0, 5)
   },

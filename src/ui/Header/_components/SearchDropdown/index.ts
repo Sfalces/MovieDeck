@@ -1,0 +1,1 @@
+export { SearchDropdownController as SearchDropdown } from './SearchDropdown.controller'

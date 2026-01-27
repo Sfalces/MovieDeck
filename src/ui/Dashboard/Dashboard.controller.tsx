@@ -27,18 +27,6 @@ export const DashboardController = () => {
     fetchUpcomingMovies()
   }, [])
 
-  const handleSearch = (query: string) => {
-    if (query.trim() === '') {
-      setMovies(allMovies)
-      return
-    }
-
-    const filtered = allMovies.filter((movie) =>
-      movie.title.toLowerCase().includes(query.toLowerCase()),
-    )
-    setMovies(filtered)
-  }
-
   if (!movies) {
     return <Spinner />
   }
@@ -46,7 +34,6 @@ export const DashboardController = () => {
   return (
     <Dashboard
       movies={movies.slice(0, 12)}
-      onSearch={handleSearch}
       upComingMovies={upComingMovies}
     />
   )

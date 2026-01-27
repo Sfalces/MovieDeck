@@ -4,6 +4,8 @@ import userEvent from '@testing-library/user-event'
 import { useInject } from '_di/container'
 import { Dashboard } from '..'
 
+const mockNavigate = vi.fn()
+
 vi.mock('react-router', async () => {
   const actual = await vi.importActual<any>('react-router')
   return {
@@ -13,10 +15,9 @@ vi.mock('react-router', async () => {
         {children}
       </button>
     ),
+    useNavigate: () => mockNavigate,
   }
 })
-
-const mockNavigate = vi.fn()
 
 const trendingMovies = [
   { id: '1', title: 'Batman Begins', overview: '', vote: 8, releaseDate: '', poster: '' },
@@ -27,10 +28,14 @@ const upcomingMovies = [
   { id: '10', title: 'Blade Reboot', overview: '', vote: 0, releaseDate: '', poster: '' },
 ]
 
-const movieByTitle = [
-  { id: '1', title: 'Batman Begins', overview: '', vote: 8, releaseDate: '', poster: '' },
-  { id: '2', title: 'The Flash', overview: '', vote: 7, releaseDate: '', poster: '' },
-]
+const movieByTitle = {
+  id: '101',
+  title: 'The Fellowship of the Ring',
+  overview: '',
+  vote: 9,
+  releaseDate: '',
+  poster: '',
+}
 
 describe('DashboardController', () => {
   let getTrendingMoviesMock: ReturnType<typeof vi.fn>
@@ -73,22 +78,7 @@ describe('DashboardController', () => {
     expect(getMovieByTitleMock).toHaveBeenCalledTimes(1)
   })
 
-  it('filters movies by title', async () => {
-    const user = userEvent.setup()
-
-    renderDashboard()
-
-    const input = await screen.findByTestId('search')
-
-    await user.type(input, 'flash{Enter}')
-
-    expect(await screen.findByText(/flash/i)).toBeInTheDocument()
-    expect(screen.queryByText(/batman/i)).not.toBeInTheDocument()
-
-    await user.clear(input)
-
-    expect(await screen.findByText(/batman/i)).toBeInTheDocument()
-  })
+ 
 
   it('triggers navigation when clicking a movie card', async () => {
     const user = userEvent.setup()
