@@ -35,7 +35,7 @@ export const FilterMenu: FC<Props> = ({ onClose, genres, handleSelect }) => {
               <li key={key}>
                 <button
                   onClick={() => handleSelect(id)}
-                  className="w-full text-left px-4 py-2 rounded-md bg-cyan-800 hover:bg-cyan-700 transition-colors text-white font-medium"
+                  className="w-full text-left px-4 py-2 rounded-md bg-cyan-800 hover:bg-cyan-700 transition-colors text-white font-medium cursor-pointer"
                 >
                   {MovieGenreNames[id]}
                 </button>

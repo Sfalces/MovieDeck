@@ -11,5 +11,5 @@ export interface MoviesRepository {
   getComingSoon: () => Promise<Movie[]>
   getMovieByGender: (genre: string) => Promise<Movie[]>
   getPersonById: (id: string) => Promise<Person>
-  searchMovies: (query: string, signal?: AbortSignal) => Promise<Movie[]>
+  searchMovies: (query: string, signal?: AbortSignal, limit?: number) => Promise<Movie[]>
 }

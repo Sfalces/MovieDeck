@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type FC } from 'react'
 import { useInject } from '_di/container'
 import type { Movie } from 'core/Movies/domain/Movie'
 import { useDebounce } from 'ui/_hooks/useDebounce'
@@ -10,11 +10,11 @@ interface Props {
   onClose: () => void
 }
 
-export const SearchDropdownController = ({
+export const SearchDropdownController: FC<Props> = ({
   searchQuery,
   onSelectMovie,
   onClose
-}: Props) => {
+}) => {
   const searchMovies = useInject('searchMovies')
 
   const [results, setResults] = useState<Movie[]>([])
@@ -42,10 +42,12 @@ export const SearchDropdownController = ({
       setError(null)
 
       try {
-        const movies = await searchMovies(debouncedQuery.trim(), abortController.signal)
+        const movies = await searchMovies(debouncedQuery.trim(), abortController.signal, 5)
+        const sortedResults = [...movies].sort((a, b) => {
+          return b.popularity - a.popularity
+        })
 
-
-        setResults(movies.slice(0, 5))
+        setResults(sortedResults)
       } catch (err) {
         if (!abortController.signal.aborted) {
           setError('Failed to search movies')

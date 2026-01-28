@@ -8,6 +8,7 @@ export const movieSummaryMapToDomain = (dto: MovieSummaryDto): Movie => ({
   overview: dto.overview,
   vote: dto.vote_average,
   releaseDate: dto.release_date,
+  popularity: dto.popularity,
   poster: dto.poster_path
     ? `https://image.tmdb.org/t/p/w500${dto.poster_path}`
     : '/placeholder.png',
@@ -18,6 +19,7 @@ export const movieDetailsMapToDomain = (dto: MovieDetailsDto): Movie => ({
   title: dto.title,
   overview: dto.overview,
   vote: dto.vote_average,
+  popularity: dto.vote_average,
   releaseDate: dto.release_date,
   poster: dto.poster_path
     ? `https://image.tmdb.org/t/p/w500${dto.poster_path}`

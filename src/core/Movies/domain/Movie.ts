@@ -4,6 +4,7 @@ export interface Movie {
   overview: string
   vote: number
   releaseDate: string
+  popularity: number
   poster: string
   tagline?: string
   runtime?: number

@@ -26,7 +26,7 @@ export const Header: FC<Props> = ({
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="flex w-full items-center justify-between gap-3 md:w-auto">
             <IconButton name="filter" onClick={handleIsVisible} />
-            <Link to="/" className="flex-1 text-center md:text-left">
+            <Link to="/" className="flex-1 text-center md:text-left"   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
               <h1 className="text-2xl font-black md:text-4xl">MovieDeck</h1>
             </Link>
           </div>

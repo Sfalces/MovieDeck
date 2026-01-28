@@ -7,6 +7,7 @@ export const aMovieDetails = (...options: Partial<Movie>[]): Movie => {
     overview: 'Bruce Wayne begins his journey to become Batman.',
     vote: 8,
     releaseDate: '2005-06-15',
+    popularity: 7.9,
     poster: '/batman-begins.jpg',
     tagline: 'Evil fears the knight.',
     runtime: 140,

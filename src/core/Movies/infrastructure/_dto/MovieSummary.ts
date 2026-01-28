@@ -6,6 +6,7 @@ export const MovieSummaryDto = z.object({
   overview: z.string(),
   vote_average: z.number(),
   release_date: z.string(),
+  popularity: z.number(),
   poster_path: z.string().nullable(),
 })
 

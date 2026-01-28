@@ -4,6 +4,7 @@ import { Dashboard } from 'ui/Dashboard'
 import { MovieDetails } from 'ui/MovieDetail'
 import { MovieListByGenre } from 'ui/MovieListByGenre'
 import { ActorDetail } from 'ui/ActorDetail'
+import { SearchResultsController } from 'ui/SearchResults/SearchResults.controller'
 
 export const App = () => {
   return (
@@ -13,6 +14,7 @@ export const App = () => {
         <Route path="/" element={<Dashboard />} />
         <Route path="/movieDetails/:id" element={<MovieDetails />} />
         <Route path="/genre/:id" element={<MovieListByGenre />} />
+        <Route path="/search" element={<SearchResultsController />} />
         <Route path="/actor/:id" element={<ActorDetail />} />
       </Routes>
     </>

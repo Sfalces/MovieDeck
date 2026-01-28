@@ -25,6 +25,7 @@ export const SearchBar: FC<Props> = ({ onSearch }) => {
   const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       onSearch(search)
+      setSearch('')
       setShowDropdown(false)
     }
   }

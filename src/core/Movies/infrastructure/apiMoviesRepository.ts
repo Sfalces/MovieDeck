@@ -57,12 +57,13 @@ export const apiMoviesRepository = ({ apiClient }: Dependencies): MoviesReposito
     return parsed.results.map(movieSummaryMapToDomain)[0]
   },
 
-  searchMovies: async (query: string, signal?: AbortSignal): Promise<Movie[]> => {
+  searchMovies: async (query: string, signal?: AbortSignal, limit?: number): Promise<Movie[]> => {
     const response = await apiClient.get(`/search/movie?api_key=${API_KEY}&query=${query}`, {
       signal,
     })
     const parsed = TrendingMoviesDtoSchema.parse(response.data)
-    return parsed.results.map(movieSummaryMapToDomain).slice(0, 5)
+    const safeLimit = typeof limit === 'number' ? Math.max(limit, 0) : 20
+    return parsed.results.map(movieSummaryMapToDomain).slice(0, safeLimit)
   },
 
   getComingSoon: async (): Promise<Movie[]> => {

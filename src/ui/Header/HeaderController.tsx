@@ -1,14 +1,9 @@
 import { useState } from 'react'
 import { Header } from './Header'
 import { useNavigate } from 'react-router'
-import type { Movie } from 'core/Movies/domain/Movie'
-
 export const HeaderController = () => {
   const [visible, setVisible] = useState(false)
   const navigate = useNavigate()
-  const [movies, setMovies] = useState<Movie[] | undefined>([])
-  const [allMovies, setAllMovies] = useState<Movie[]>([])
-
   const handleIsVisible = () => {
     setVisible((prev) => !prev)
   }
@@ -21,15 +16,13 @@ export const HeaderController = () => {
   }
 
   const handleSearch = (query: string) => {
-    if (query.trim() === '') {
-      setMovies(allMovies)
+    const trimmedQuery = query.trim()
+    if (trimmedQuery === '') {
       return
     }
 
-    const filtered = allMovies.filter((movie) =>
-      movie.title.toLowerCase().includes(query.toLowerCase()),
-    )
-    setMovies(filtered)
+    handleClose()
+    navigate(`/search?q=${encodeURIComponent(trimmedQuery)}`)
   }
 
   return (

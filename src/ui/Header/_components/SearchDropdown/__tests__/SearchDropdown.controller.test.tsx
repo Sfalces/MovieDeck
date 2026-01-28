@@ -1,4 +1,3 @@
-import React from 'react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { SearchDropdownController } from '../SearchDropdown.controller'
@@ -58,7 +57,7 @@ describe('SearchDropdownController', () => {
   })
 
   it('fetches movies and exposes up to five results', async () => {
-    const movies = Array.from({ length: 8 }, (_, index) => ({
+    const movies = Array.from({ length: 5 }, (_, index) => ({
       id: `${index}`,
       title: `Movie ${index}`,
       overview: '',
@@ -79,7 +78,7 @@ describe('SearchDropdownController', () => {
     )
 
     await waitFor(() => {
-      expect(searchMoviesMock).toHaveBeenCalledWith('spider', expect.any(AbortSignal))
+      expect(searchMoviesMock).toHaveBeenCalledWith('spider', expect.any(AbortSignal), 5)
     })
 
     await waitFor(() => {

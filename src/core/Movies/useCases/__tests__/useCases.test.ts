@@ -129,10 +129,10 @@ describe('Use Cases', () => {
 
       const useCase = searchMovies({ apiMoviesRepository: mockRepository })
       const signal = {} as AbortSignal
-      const result = await useCase('Fight Club', signal)
+      const result = await useCase('Fight Club', signal, 20)
 
       expect(mockRepository.searchMovies).toHaveBeenCalledTimes(1)
-      expect(mockRepository.searchMovies).toHaveBeenCalledWith('Fight Club', signal)
+      expect(mockRepository.searchMovies).toHaveBeenCalledWith('Fight Club', signal, 20)
       expect(result).toEqual(expectedMovies)
     })
   })
