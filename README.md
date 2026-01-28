@@ -40,6 +40,7 @@ MovieDeck is a React + Vite single-page experience that lets you browse trending
 - `yarn test` runs the Vitest suite (controller and infrastructure tests).
 - `yarn lint` ensures ESLint rules pass across the project.
 - `yarn build` already runs TypeScript’s `tsc -b`, so it doubles as a type check.
+- Husky hooks (`pre-commit` and `pre-push`) execute `yarn test` so code cannot be committed or pushed without passing the suite.
 
 ### Folder highlights
 
