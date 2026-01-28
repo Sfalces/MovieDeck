@@ -1,0 +1,11 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Colores
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m' # Sin color
+
+
+echo "${GREEN}Pre-push: Running tests...${NC}"
+yarn test
