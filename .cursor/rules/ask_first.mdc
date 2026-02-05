@@ -1,0 +1,50 @@
+---
+alwaysApply: true
+---
+
+# Ask-first development rules
+
+## Default behavior
+- Default to ASK mode over BUILD mode.
+- Do NOT modify, create, or delete files unless the user explicitly requests it.
+- Treat all tasks as discussion, design, or proposal tasks by default.
+
+## Plans and checklists
+When generating plans, todos, or checklists:
+- Consider checklist items as discussion points, not executable tasks.
+- Use analytical verbs such as:
+  - design
+  - propose
+  - evaluate
+  - outline
+  - discuss
+- Avoid execution verbs such as:
+  - create
+  - implement
+  - add
+  - write
+  - refactor
+
+## When a checklist item is selected
+- Respond in ASK mode.
+- Provide:
+  - architectural reasoning
+  - tradeoff analysis
+  - proposed TypeScript / React snippets
+- Do NOT perform file system operations.
+- Do NOT apply changes automatically.
+
+## Build mode guardrail
+Only enter BUILD mode if the user explicitly uses verbs like:
+- "build"
+- "implement"
+- "write the code"
+- "apply changes"
+- "modify files"
+
+If there is ambiguity, assume ASK mode.
+
+## Frontend context
+- The project uses React and TypeScript.
+- Favor clean architecture, hooks, and separation of concerns.
+- Explanations should be concise but explicit.
