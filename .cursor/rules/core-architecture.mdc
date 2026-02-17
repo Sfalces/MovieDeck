@@ -1,0 +1,346 @@
+---
+description: Arquitectura del core/ - Clean Architecture + DDD para lógicas de negocio
+globs: core/**/*
+alwaysApply: false
+---
+
+# Arquitectura del Core - Clean Architecture + DDD
+
+Este proyecto utiliza una arquitectura basada en **Clean Architecture** y **Domain-Driven Design (DDD)** para el directorio `core/`. Esta arquitectura garantiza código testeable, mantenible y desacoplado.
+
+## 📁 Estructura de un Módulo
+
+Cada módulo en `core/` debe seguir esta estructura:
+
+```
+core/{module-name}/
+├── _di/                     # 🔌 Inyección de Dependencias
+│   └── index.ts             # Función injectXxxDependencies()
+├── domain/                  # 💎 Capa de Dominio (NÚCLEO)
+│   ├── __builders__/        # Builders para tests (ej: a{Entity}())
+│   ├── __tests__/           # Tests unitarios del dominio
+│   ├── {entity}.ts          # Entidades/Interfaces del dominio
+│   ├── {entity}-repository.ts # Interfaz del repositorio (CONTRATO)
+│   └── {entity}-utils.ts    # Utilidades puras del dominio
+├── infrastructure/          # 🔧 Capa de Infraestructura
+│   ├── __tests__/           # Tests de integración
+│   ├── dto/                 # Data Transfer Objects
+│   │   └── {entity}-{source}.dto.ts
+│   ├── mappers/             # Transformadores DTO → Dominio
+│   │   ├── __tests__/
+│   │   └── {entity}-{source}.mapper.ts
+│   └── {entity}-{source}.repository.ts # Implementación del repositorio
+└── useCase/                # ⚙️ Capa de Aplicación/Casos de uso
+    ├── __tests__/
+    └── {entity}.useCase.ts  # Lógica de negocio
+```
+
+## 🔵 Domain Layer (Capa de Dominio)
+
+El **corazón** del módulo. **NO debe tener dependencias externas** (ni frameworks, ni librerías).
+
+### Entidades (`domain/{entity}.ts`)
+
+```typescript
+/**
+ * Entidad básica del dominio
+ */
+export interface {Entity} {
+  id: string;
+  // ... propiedades esenciales
+}
+
+/**
+ * Variante extendida con más datos
+ */
+export interface {Entity}Detail extends {Entity} {
+  // ... propiedades adicionales
+}
+```
+
+### Interfaz del Repositorio (`domain/{entity}-repository.ts`)
+
+Define el **CONTRATO** que debe cumplir cualquier implementación:
+
+```typescript
+import type { {Entity}, {Entity}Detail } from './{entity}';
+
+/**
+ * Contrato del repositorio de {Entity}
+ * Define operaciones de acceso a datos
+ */
+export interface {Entity}Repository {
+  /**
+   * Lista todos los identificadores
+   */
+  listIds(): Promise<string[]>;
+
+  /**
+   * Obtiene una entidad por ID
+   */
+  getById(id: string): Promise<{Entity}Detail | null>;
+
+  /**
+   * Lista todas las entidades
+   */
+  list(): Promise<{Entity}[]>;
+}
+```
+
+### Utilidades del Dominio (`domain/{entity}-utils.ts`)
+
+Funciones **puras** sin side effects:
+
+```typescript
+import type { {Entity} } from './{entity}';
+
+/**
+ * Función pura de utilidad del dominio
+ */
+export function format{Entity}Date(entity: {Entity}, locale: string): string {
+  // Lógica pura sin dependencias externas
+}
+```
+
+### Builders para Tests (`domain/__builders__/{entity}.builder.ts`)
+
+Patrón **Builder** para crear objetos de test:
+
+```typescript
+import type { {Entity}, {Entity}Detail } from '../{entity}';
+
+export class {Entity}Builder {
+  private entity: {Entity} = {
+    // Valores por defecto sensatos
+    id: 'test-id',
+    // ...
+  };
+
+  withId(id: string): this {
+    this.entity.id = id;
+    return this;
+  }
+
+  // ... más métodos with{Property}()
+
+  build(): {Entity} {
+    return { ...this.entity };
+  }
+}
+
+/**
+ * Helper semántico para tests: a{Entity}().withX().build()
+ */
+export const a{Entity} = () => new {Entity}Builder();
+```
+
+## 🟢 Infrastructure Layer (Capa de Infraestructura)
+
+Implementa los contratos del dominio con **tecnología específica**.
+
+### DTOs (`infrastructure/dto/{entity}-{source}.dto.ts`)
+
+Representan los datos **raw** de la fuente externa:
+
+```typescript
+/**
+ * DTO que representa los datos crudos de {source}
+ * Este es el formato raw ANTES de mapearlo al dominio
+ */
+export interface {Entity}{Source}DTO {
+  // Estructura tal como viene de la fuente (API, filesystem, DB...)
+}
+```
+
+### Mappers (`infrastructure/mappers/{entity}-{source}.mapper.ts`)
+
+Transforman **DTOs → Entidades de Dominio**:
+
+```typescript
+import type { {Entity}, {Entity}Detail } from '../../domain/{entity}';
+import type { {Entity}{Source}DTO } from '../dto/{entity}-{source}.dto';
+
+/**
+ * Construye una entidad de dominio desde un DTO
+ */
+export function build{Entity}(dto: {Entity}{Source}DTO): {Entity} {
+  return {
+    id: dto.externalId,
+    // Mapeo de campos DTO → Dominio
+  };
+}
+
+export function build{Entity}Detail(dto: {Entity}{Source}DTO): {Entity}Detail {
+  return {
+    ...build{Entity}(dto),
+    // Campos adicionales
+  };
+}
+```
+
+### Implementación del Repositorio (`infrastructure/{entity}-{source}.repository.ts`)
+
+```typescript
+import 'server-only'; // Si solo debe correr en servidor
+import type { {Entity}Repository } from '../domain/{entity}-repository';
+import type { {Entity}, {Entity}Detail } from '../domain/{entity}';
+import type { {Entity}{Source}DTO } from './dto/{entity}-{source}.dto';
+import { build{Entity}, build{Entity}Detail } from './mappers/{entity}-{source}.mapper';
+
+/**
+ * Implementación del repositorio basada en {source}
+ */
+export const {entity}{Source}Repository: {Entity}Repository = {
+  listIds: async (): Promise<string[]> => {
+    // Implementación específica de {source}
+  },
+
+  getById: async (id: string): Promise<{Entity}Detail | null> => {
+    // 1. Leer datos de {source}
+    // 2. Crear DTO
+    // 3. Mapear a entidad de dominio
+    const dto: {Entity}{Source}DTO = /* leer de source */;
+    return build{Entity}Detail(dto);
+  },
+
+  list: async (): Promise<{Entity}[]> => {
+    // Implementación
+  },
+};
+```
+
+## 🟡 Services Layer (Capa de Aplicación)
+
+Contiene **lógica de negocio** y orquesta repositorios.
+
+### Servicio (`services/{entity}.service.ts`)
+
+```typescript
+import type { {Entity}Repository } from '../domain/{entity}-repository';
+import type { {Entity}, {Entity}Detail } from '../domain/{entity}';
+
+let repository: {Entity}Repository;
+
+/**
+ * Servicio que encapsula la lógica de negocio
+ */
+export const {entity}Service = {
+  /**
+   * Lista entidades aplicando reglas de negocio
+   */
+  list: async (): Promise<{Entity}[]> => {
+    const all = await repository.list();
+    // Aplicar reglas de negocio (filtros, validaciones, etc.)
+    return all.filter(item => /* regla de negocio */);
+  },
+
+  getById: async (id: string): Promise<{Entity}Detail | null> => {
+    const entity = await repository.getById(id);
+    // Validar reglas de negocio
+    if (!entity || /* regla de negocio */) {
+      return null;
+    }
+    return entity;
+  },
+};
+
+/**
+ * Inyecta la implementación del repositorio
+ */
+export const set{Entity}Repository = (repo: {Entity}Repository) => {
+  repository = repo;
+};
+```
+
+## 🔌 Dependency Injection (`_di/index.ts`)
+
+Conecta servicios con implementaciones:
+
+```typescript
+import { set{Entity}Repository } from '../services/{entity}.service';
+import { {entity}{Source}Repository } from '../infrastructure/{entity}-{source}.repository';
+
+/**
+ * Inyecta las dependencias del módulo {entity}
+ */
+export const inject{Entity}Dependencies = () => {
+  set{Entity}Repository({entity}{Source}Repository);
+};
+```
+
+### Registro Global (`di/index.ts`)
+
+```typescript
+import { inject{Entity}Dependencies } from '@/core/{entity}/_di';
+
+// Inyectar todas las dependencias al iniciar la app
+inject{Entity}Dependencies();
+```
+
+## 🧪 Testing
+
+### Tests de Servicios (con Mocks)
+
+```typescript
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { {entity}Service, set{Entity}Repository } from '../{entity}.service';
+import type { {Entity}Repository } from '../../domain/{entity}-repository';
+import { a{Entity} } from '../../domain/__builders__/{entity}.builder';
+
+describe('{entity}Service', () => {
+  let mockRepository: {Entity}Repository;
+
+  beforeEach(() => {
+    mockRepository = {
+      listIds: vi.fn(),
+      getById: vi.fn(),
+      list: vi.fn(),
+    };
+    set{Entity}Repository(mockRepository);
+  });
+
+  it('should apply business logic', async () => {
+    const published = a{Entity}().withPublished(true).build();
+    const draft = a{Entity}().withPublished(false).build();
+
+    vi.mocked(mockRepository.list).mockResolvedValue([published, draft]);
+
+    const result = await {entity}Service.list();
+
+    expect(result).toHaveLength(1);
+  });
+});
+```
+
+## ⚠️ Reglas Importantes
+
+1. **Domain NUNCA importa de Infrastructure o Services**
+2. **Services SOLO importan interfaces del Domain** (nunca implementaciones)
+3. **Infrastructure implementa interfaces del Domain**
+4. **DTOs son específicos de cada fuente de datos** (no se reusan entre sources)
+5. **Mappers son funciones puras** (fáciles de testear)
+6. **Builders usan fluent interface** (`a{Entity}().withX().build()`)
+7. **Tests de servicios mockean repositorios**, no infraestructura real
+
+## 🔄 Flujo de Datos
+
+```
+[Fuente Externa] → [DTO] → [Mapper] → [Entidad Dominio] → [Service] → [UI/API]
+                     ↑                        ↑                ↑
+              Infrastructure              Domain           Application
+```
+
+## 📝 Nomenclatura
+
+| Elemento             | Patrón                       | Ejemplo                  |
+| -------------------- | ---------------------------- | ------------------------ |
+| Entidad              | `{Entity}`                   | `BlogPost`               |
+| Entidad extendida    | `{Entity}Detail`             | `BlogPostDetail`         |
+| Repositorio interfaz | `{Entity}Repository`         | `BlogRepository`         |
+| Repositorio impl     | `{entity}{Source}Repository` | `blogFileRepository`     |
+| DTO                  | `{Entity}{Source}DTO`        | `BlogFileDTO`            |
+| Mapper               | `build{Entity}()`            | `buildBlogPost()`        |
+| Servicio             | `{entity}Service`            | `blogService`            |
+| Builder              | `{Entity}Builder`            | `BlogPostBuilder`        |
+| Builder helper       | `a{Entity}()`                | `aBlogPost()`            |
+| DI function          | `inject{Entity}Dependencies` | `injectBlogDependencies` |
