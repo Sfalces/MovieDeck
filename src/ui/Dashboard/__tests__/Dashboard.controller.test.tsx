@@ -1,8 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useInject } from '_di/container'
 import { Dashboard } from '..'
+import { FavoritesProvider } from 'ui/_context/FavoritesContext'
+import { favoritesStorage } from 'ui/_store/favoritesStorage'
 
 const mockNavigate = vi.fn()
 
@@ -45,6 +47,7 @@ describe('DashboardController', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockNavigate.mockClear()
+    favoritesStorage.clear()
 
     getTrendingMoviesMock = vi.fn().mockResolvedValue(trendingMovies)
     getComingSoonMock = vi.fn().mockResolvedValue(upcomingMovies)
@@ -91,6 +94,50 @@ describe('DashboardController', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/movieDetails/1')
     expect(mockNavigate).toHaveBeenCalledTimes(1)
   })
+
+  it('toggles favorite when clicking the favorite button', async () => {
+    const user = userEvent.setup()
+    renderDashboard()
+
+    const movieTitle = await screen.findByText('Batman Begins')
+    const linkButton = movieTitle.closest('button')
+    expect(linkButton).not.toBeNull()
+
+    const cardContainer = linkButton!.parentElement
+    expect(cardContainer).not.toBeNull()
+
+    const addButton = within(cardContainer!).getByRole('button', { name: 'Add to favorites' })
+    expect(addButton).toHaveAttribute('aria-pressed', 'false')
+
+    await user.click(addButton)
+
+    const removeButton = within(cardContainer!).getByRole('button', { name: 'Remove from favorites' })
+    expect(removeButton).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('does not navigate when clicking the favorite button', async () => {
+    const user = userEvent.setup()
+    renderDashboard()
+
+    const movieTitle = await screen.findByText('Batman Begins')
+    const linkButton = movieTitle.closest('button')
+    expect(linkButton).not.toBeNull()
+
+    const cardContainer = linkButton!.parentElement
+    expect(cardContainer).not.toBeNull()
+
+    mockNavigate.mockClear()
+
+    const addButton = within(cardContainer!).getByRole('button', { name: 'Add to favorites' })
+    await user.click(addButton)
+
+    expect(mockNavigate).not.toHaveBeenCalled()
+  })
 })
 
-const renderDashboard = () => render(<Dashboard />)
+const renderDashboard = () =>
+  render(
+    <FavoritesProvider>
+      <Dashboard />
+    </FavoritesProvider>,
+  )

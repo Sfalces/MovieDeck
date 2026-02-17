@@ -4,8 +4,10 @@ import { Trailer } from './_components/Trailer'
 import MovieCarousel from '../_components/molecules/MovieCarousel/MovieCarousel'
 import type { MovieCredits } from 'core/Movies/domain/MovieCredits'
 import { Credits } from './_components/Credits'
+import { FavoriteButton } from 'ui/_components/atoms/FavoriteButton'
 
 interface Props {
+  movie: Movie
   trailer: MovieVideos
   poster: string
   title: string
@@ -21,6 +23,7 @@ interface Props {
 }
 
 export const MovieDetails: FC<Props> = ({
+  movie,
   poster,
   title,
   overview,
@@ -51,7 +54,10 @@ export const MovieDetails: FC<Props> = ({
       <div className="flex flex-row gap-4 pb-3">
         <img src={poster} className="h-120" />
         <div className="flex flex-col gap-4">
-          <h1 className="text-4xl font-bold">{title}</h1>
+          <div className="flex items-start gap-3">
+            <h1 className="text-4xl font-bold">{title}</h1>
+            <FavoriteButton movie={movie} className="mt-1" />
+          </div>
           <p className="text-gray-300">{overview}</p>
 
           <div className="flex flex-col gap-2 mt-2">

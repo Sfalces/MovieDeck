@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { useInject } from '_di/container'
 import { aMovieCredits } from 'core/Movies/infrastructure/__builders__/MovieCreditsBuilder'
 import { aMovieDetails } from 'core/Movies/infrastructure/__builders__/MovieDetailsBuilder'
@@ -6,6 +6,8 @@ import { aMovieVideos } from 'core/Movies/infrastructure/__builders__/MovieVideo
 import { vi, expect } from 'vitest'
 import { MovieDetails } from '..'
 import userEvent from '@testing-library/user-event'
+import { FavoritesProvider } from 'ui/_context/FavoritesContext'
+import { favoritesStorage } from 'ui/_store/favoritesStorage'
 
 vi.mock('react-router', async () => {
   const actual = await vi.importActual<any>('react-router')
@@ -37,6 +39,7 @@ describe('MovieDetails', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockNavigate.mockClear()
+    favoritesStorage.clear()
 
     getMovieByIdMock = vi.fn().mockResolvedValue(movieDetailsMock)
     getMovieVideosMock = vi.fn().mockResolvedValue(movieVideosMock)
@@ -89,6 +92,49 @@ describe('MovieDetails', () => {
     expect(mockNavigate).toHaveBeenCalledTimes(1)
     expect(mockNavigate).toHaveBeenCalledWith('/movieDetails/3')
   })
+
+  it('should toggle favorite when clicking the favorite button', async () => {
+    const user = userEvent.setup()
+    renderMovieDetails()
+
+    const heading = await screen.findByRole('heading', { name: 'Batman Begins' })
+    const header = heading.parentElement
+    expect(header).not.toBeNull()
+
+    const addButton = within(header!).getByRole('button', { name: 'Add to favorites' })
+    expect(addButton).toHaveAttribute('aria-pressed', 'false')
+
+    await user.click(addButton)
+
+    const removeButton = within(header!).getByRole('button', { name: 'Remove from favorites' })
+    expect(removeButton).toHaveAttribute('aria-pressed', 'true')
+
+    await user.click(removeButton)
+
+    const addAgainButton = within(header!).getByRole('button', { name: 'Add to favorites' })
+    expect(addAgainButton).toHaveAttribute('aria-pressed', 'false')
+  })
+
+  it('should not navigate when clicking the favorite button', async () => {
+    const user = userEvent.setup()
+    renderMovieDetails()
+
+    const heading = await screen.findByRole('heading', { name: 'Batman Begins' })
+    const header = heading.parentElement
+    expect(header).not.toBeNull()
+
+    mockNavigate.mockClear()
+
+    const button = within(header!).getByRole('button', { name: 'Add to favorites' })
+    await user.click(button)
+
+    expect(mockNavigate).not.toHaveBeenCalled()
+  })
 })
 
-const renderMovieDetails = () => render(<MovieDetails />)
+const renderMovieDetails = () =>
+  render(
+    <FavoritesProvider>
+      <MovieDetails />
+    </FavoritesProvider>,
+  )

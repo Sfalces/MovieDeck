@@ -49,6 +49,7 @@ export const MovieDetailsController = () => {
   }
   return (
     <MovieDetails
+      movie={movieDetails}
       poster={movieDetails.poster}
       budget={movieDetails.budget}
       genres={movieDetails.genres}

@@ -1,9 +1,11 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { useInject } from '_di/container'
 import { aMovieDetails } from 'core/Movies/infrastructure/__builders__/MovieDetailsBuilder'
 import { vi, expect } from 'vitest'
 import { MovieListByGenre } from 'ui/MovieListByGenre'
 import userEvent from '@testing-library/user-event'
+import { FavoritesProvider } from 'ui/_context/FavoritesContext'
+import { favoritesStorage } from 'ui/_store/favoritesStorage'
 
 const mockUseParams = vi.hoisted(() => vi.fn())
 const mockNavigate = vi.hoisted(() => vi.fn())
@@ -30,6 +32,7 @@ describe('MovieDetails', () => {
     vi.clearAllMocks()
     mockNavigate.mockClear()
     mockUseParams.mockReturnValue({ id: '28' })
+    favoritesStorage.clear()
 
     getMovieByGenderMock = vi.fn().mockResolvedValue(moviesByGender)
     ;(useInject as any).mockImplementation((key: string) => {
@@ -63,6 +66,50 @@ describe('MovieDetails', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith('/movieDetails/2')
   })
+
+  it('should toggle favorite when clicking the favorite button', async () => {
+    const user = userEvent.setup()
+    renderMovieListByGenre()
+
+    const movieTitle = await screen.findByText('The Flash')
+    const linkButton = movieTitle.closest('button')
+    expect(linkButton).not.toBeNull()
+
+    const cardContainer = linkButton!.parentElement
+    expect(cardContainer).not.toBeNull()
+
+    const addButton = within(cardContainer!).getByRole('button', { name: 'Add to favorites' })
+    expect(addButton).toHaveAttribute('aria-pressed', 'false')
+
+    await user.click(addButton)
+
+    const removeButton = within(cardContainer!).getByRole('button', { name: 'Remove from favorites' })
+    expect(removeButton).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('should not navigate when clicking the favorite button', async () => {
+    const user = userEvent.setup()
+    renderMovieListByGenre()
+
+    const movieTitle = await screen.findByText('The Flash')
+    const linkButton = movieTitle.closest('button')
+    expect(linkButton).not.toBeNull()
+
+    const cardContainer = linkButton!.parentElement
+    expect(cardContainer).not.toBeNull()
+
+    mockNavigate.mockClear()
+
+    const addButton = within(cardContainer!).getByRole('button', { name: 'Add to favorites' })
+    await user.click(addButton)
+
+    expect(mockNavigate).not.toHaveBeenCalled()
+  })
 })
 
-const renderMovieListByGenre = () => render(<MovieListByGenre />)
+const renderMovieListByGenre = () =>
+  render(
+    <FavoritesProvider>
+      <MovieListByGenre />
+    </FavoritesProvider>,
+  )
