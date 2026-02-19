@@ -1,5 +1,6 @@
-import { FiFilter } from 'react-icons/fi'
+import { FiFilter, FiHeart } from 'react-icons/fi'
 
 export const icons = {
   filter: FiFilter,
+  heart: FiHeart,
 }

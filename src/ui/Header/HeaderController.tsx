@@ -25,6 +25,11 @@ export const HeaderController = () => {
     navigate(`/search?q=${encodeURIComponent(trimmedQuery)}`)
   }
 
+  const handleFavorites = () => {
+    navigate('/favorites')
+    handleClose()
+  }
+
   return (
     <Header
       handleIsVisible={handleIsVisible}
@@ -32,6 +37,7 @@ export const HeaderController = () => {
       onClose={handleClose}
       onSearch={handleSearch}
       handleSelectGenre={handleSelectGenre}
+      onFavoritesClick={handleFavorites}
     />
   )
 }

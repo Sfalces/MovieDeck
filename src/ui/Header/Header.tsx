@@ -11,6 +11,7 @@ interface Props {
   onClose: () => void
   handleSelectGenre: (id: number) => void
   onSearch: (query: string) => void
+  onFavoritesClick: () => void
 }
 
 export const Header: FC<Props> = ({
@@ -18,7 +19,8 @@ export const Header: FC<Props> = ({
   visible,
   onClose,
   handleSelectGenre,
-  onSearch
+  onSearch,
+  onFavoritesClick,
 }) => {
   return (
     <>
@@ -26,7 +28,17 @@ export const Header: FC<Props> = ({
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="flex w-full items-center justify-between gap-3 md:w-auto">
             <IconButton name="filter" onClick={handleIsVisible} />
-            <Link to="/" className="flex-1 text-center md:text-left"   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            <button
+              onClick={onFavoritesClick}
+              className="cursor-pointer rounded-lg border border-cyan-600 bg-cyan-700 px-4 py-2 text-sm font-bold text-cyan-50 shadow-sm transition-colors hover:bg-cyan-600 hover:text-white"
+            >
+              Favorites
+            </button>
+            <Link
+              to="/"
+              className="flex-1 text-center md:text-left"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
               <h1 className="text-2xl font-black md:text-4xl">MovieDeck</h1>
             </Link>
           </div>
@@ -37,9 +49,7 @@ export const Header: FC<Props> = ({
       </div>
 
       <AnimatePresence>
-        {visible && (
-          <FilterMenu onClose={onClose} onSelectGenre={handleSelectGenre} />
-        )}
+        {visible && <FilterMenu onClose={onClose} onSelectGenre={handleSelectGenre} />}
       </AnimatePresence>
     </>
   )

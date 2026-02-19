@@ -5,6 +5,7 @@ import { MovieDetails } from 'ui/MovieDetail'
 import { MovieListByGenre } from 'ui/MovieListByGenre'
 import { ActorDetail } from 'ui/ActorDetail'
 import { SearchResultsController } from 'ui/SearchResults/SearchResults.controller'
+import { FavoritesPage } from 'ui/Favorites/FavoritesPage'
 import { FavoritesProvider } from 'ui/_context/FavoritesContext'
 
 export const App = () => {
@@ -17,6 +18,7 @@ export const App = () => {
           <Route path="/movieDetails/:id" element={<MovieDetails />} />
           <Route path="/genre/:id" element={<MovieListByGenre />} />
           <Route path="/search" element={<SearchResultsController />} />
+          <Route path="/favorites" element={<FavoritesPage />} />
           <Route path="/actor/:id" element={<ActorDetail />} />
         </Routes>
       </FavoritesProvider>
